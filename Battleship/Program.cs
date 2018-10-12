@@ -146,7 +146,7 @@ namespace BattleshipGame
                     try
                     {
                        guessX = Convert.ToInt32(Console.ReadLine());
-                        goodguess = true;
+                       goodguess = true;
                     }
                     catch
                     {

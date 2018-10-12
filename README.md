@@ -3,6 +3,7 @@
 A simple console-based BattleShip game
 
 10 x 10 game board
+
 X and Y Coordinates are 0-9
 
 A ship that occupies a single space is randomly placed on the board.

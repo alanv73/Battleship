@@ -4,6 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/********************************************
+ * ---====<<<< BATTLESHIP >>>>====----
+ * Alan Van Art
+ * 10 x 10 game board
+ * ship occupies a single space on the board
+ * input X and Y coordinates (0-9) to guess 
+ * the location of the ship that is randomly
+ * placed on the board. Gameplay continues
+ * until the location is correctly guessed.
+ ********************************************/
+
 namespace BattleshipGame
 {
     struct ShipPoint
@@ -22,6 +33,7 @@ namespace BattleshipGame
         public bool Sunk { get; private set; } = false;
         public bool Dupe { get; private set; } = false;
 
+        //class constructor
         public Battleship()
         {
             for (int y = 0; y < boardsize; y++)
@@ -34,6 +46,7 @@ namespace BattleshipGame
             LaunchShip();
         }
 
+        //prints current state of board
         public void PrintBoard()
         {
             for (int y = 0; y < boardsize; y++)
@@ -54,12 +67,14 @@ namespace BattleshipGame
             }
         }
 
+        //picks random location for a ship
         public void LaunchShip()
         {
             shipPos.spX = rnd.Next(boardsize);
             shipPos.spY = rnd.Next(boardsize);
         }
 
+        //returns ship location as text and X & Y output variables
         public string GetShipPos(out int xPos, out int yPos)
         {
             xPos = shipPos.spX;
@@ -67,6 +82,9 @@ namespace BattleshipGame
             return "( " + shipPos.spX + ", " + shipPos.spY + " )";
         }
 
+        //used this for guessing postition
+        //calls ShotMiss/ShotHit to update
+        //the board with hit/miss, also updates sunk/dupe var 
         public bool ShootAtShip(int xcoord, int ycoord)
         {
             if (xcoord == shipPos.spX && ycoord == shipPos.spY)
@@ -79,6 +97,7 @@ namespace BattleshipGame
             return false;
         }
 
+        //prints game title
         public void PrintTitle()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -97,6 +116,7 @@ namespace BattleshipGame
             Console.Write("---\n");
         }
 
+        //updates board if miss/dupe variable
         private void ShotMiss(int shotx, int shoty)
         {
             if (gameBoard[shotx, shoty] == "*")
@@ -108,6 +128,7 @@ namespace BattleshipGame
             }
         }
 
+        //updates board if hit
         private void ShotHit(int shotx, int shoty)
         {
             gameBoard[shotx, shoty] = "X";
@@ -119,6 +140,7 @@ namespace BattleshipGame
     {
         static void Main(string[] args)
         {
+            //init variables and game object
             bool shipSunk = false;
             int guesses = 1;
             bool goodguess = true;
@@ -126,6 +148,7 @@ namespace BattleshipGame
             Battleship myBS = new Battleship();
             string shipLocation = myBS.GetShipPos(out int shipPosX, out int shipPosY);
 
+            //main game loop
             while (!shipSunk)
             {
                 Console.Clear();
@@ -134,6 +157,7 @@ namespace BattleshipGame
                 Console.WriteLine();
                 myBS.PrintBoard();
 
+                //check to see if the last guess was a duplicate of previous guesses
                 if (myBS.Dupe)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -141,7 +165,7 @@ namespace BattleshipGame
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
 
-                do
+                do//get X coordinate
                 {
                     Console.Write("\nGuess #{0} | Enter X Coordinate: ", guesses);
                     try
@@ -149,7 +173,7 @@ namespace BattleshipGame
                        guessX = Convert.ToInt32(Console.ReadLine());
                        goodguess = true;
                     }
-                    catch
+                    catch//in case something other than an integer was entered
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("\a\nInvalid Input\n");
@@ -158,7 +182,7 @@ namespace BattleshipGame
                     }
                 } while (!goodguess);
 
-                do
+                do//get Y coordinate
                 {
                     Console.Write("\nGuess #{0} | Enter Y Coordinate: ", guesses);
                     try
@@ -166,7 +190,7 @@ namespace BattleshipGame
                         guessY = Convert.ToInt32(Console.ReadLine());
                         goodguess = true;
                     }
-                    catch
+                    catch//in case something other than an integer was entered
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write("\a\nInvalid Input\n");
@@ -177,10 +201,12 @@ namespace BattleshipGame
 
                 shipSunk = myBS.ShootAtShip(guessX, guessY);
 
+                //increment guess count if guess was not a duplicate and the ship wasn't sunk
                 if (!myBS.Dupe && !myBS.Sunk)
                     guesses++;
             }
 
+            //game was won
             Console.Clear();
             Console.WriteLine(shipLocation);
             myBS.PrintTitle();

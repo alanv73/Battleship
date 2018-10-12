@@ -134,14 +134,15 @@ namespace BattleshipGame
                 Console.WriteLine();
                 myBS.PrintBoard();
 
+                if (myBS.Dupe)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(" \nYou already guessed that spot, guess again.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+
                 do
                 {
-                    if (myBS.Dupe)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(" \nYou already guessed that spot, guess again.");
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                    }
                     Console.Write("\nGuess #{0} | Enter X Coordinate: ", guesses);
                     try
                     {

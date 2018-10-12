@@ -26,13 +26,14 @@ namespace BattleshipGame
 
     class Battleship
     {
-        private readonly static int boardsize = 10;
+        private static int boardsize = 10;
         private string[,] gameBoard = new string[boardsize, boardsize];
         private readonly Random rnd = new Random();
         private ShipPoint shipPos = new ShipPoint();
 
         public bool Sunk { get; private set; } = false;
         public bool Dupe { get; private set; } = false;
+        public int Boardsize { get => boardsize; }
 
         //class constructor
         public Battleship()
@@ -50,9 +51,13 @@ namespace BattleshipGame
         //prints current state of board
         public void PrintBoard()
         {
+            PrintTitle();
+            Console.WriteLine();
             for (int y = 0; y < boardsize; y++)
             {
-                Console.Write(new string(' ', 8));
+                int lpad = (34 - ((boardsize * 2) - 1)) / 2;
+                lpad = (lpad >= 0) ? lpad : 0;
+                Console.Write(new string(' ', lpad));
                 for (int x = 0; x < boardsize; x++)
                 {
                     if (gameBoard[x, y] == "O")
@@ -153,9 +158,7 @@ namespace BattleshipGame
             while (!shipSunk)
             {
                 Console.Clear();
-                Console.WriteLine(shipLocation);
-                myBS.PrintTitle();
-                Console.WriteLine();
+                //Console.WriteLine(shipLocation);//uncomment to see ship location on screen
                 myBS.PrintBoard();
 
                 //check to see if the last guess was a duplicate of previous guesses
@@ -172,19 +175,19 @@ namespace BattleshipGame
                     try
                     {
                         guessX = Convert.ToInt32(Console.ReadLine());
-                        if (guessX < 0 || guessX > 9)
-                            throw new System.ArgumentOutOfRangeException();
+                        if (guessX < 0 || guessX > myBS.Boardsize - 1)
+                            throw new ArgumentOutOfRangeException();
                         else
                             goodguess = true;
                     }
-                    catch//in case something other than an integer was entered
+                    catch //in case something other than an integer was entered
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\a\nValid values are 0 through 9\n");
+                        Console.Write("\a\nValid values are 0 through {0}\n", myBS.Boardsize - 1);
                         Console.ForegroundColor = ConsoleColor.Gray;
                         goodguess = false;
                     }
-                } while (!goodguess || guessX < 0 || guessX > 9);
+                } while (!goodguess);
 
                 do//get Y coordinate
                 {
@@ -192,19 +195,19 @@ namespace BattleshipGame
                     try
                     {
                         guessY = Convert.ToInt32(Console.ReadLine());
-                        if (guessY < 0 || guessY > 9)
-                            throw new System.ArgumentOutOfRangeException();
+                        if (guessY < 0 || guessY > myBS.Boardsize - 1)
+                            throw new ArgumentOutOfRangeException();
                         else
                             goodguess = true;
                     }
                     catch//in case something other than an integer was entered
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\a\nValid values are 0 through 9\n");
+                        Console.Write("\a\nValid values are 0 through {0}\n", myBS.Boardsize - 1);
                         goodguess = false;
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
-                } while (!goodguess || guessY < 0 || guessY > 9);
+                } while (!goodguess);
 
                 shipSunk = myBS.ShootAtShip(guessX, guessY);
 
@@ -215,9 +218,7 @@ namespace BattleshipGame
 
             //game was won
             Console.Clear();
-            Console.WriteLine(shipLocation);
-            myBS.PrintTitle();
-            Console.WriteLine();
+            //Console.WriteLine(shipLocation);//uncomment to see ship location on screen
             myBS.PrintBoard();
 
             Console.ForegroundColor = ConsoleColor.Red;

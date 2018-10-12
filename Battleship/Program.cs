@@ -9,6 +9,7 @@ using System.Threading.Tasks;
  * Alan Van Art
  * 10 x 10 game board
  * ship occupies a single space on the board
+ * 
  * input X and Y coordinates (0-9) to guess 
  * the location of the ship that is randomly
  * placed on the board. Gameplay continues
@@ -82,8 +83,8 @@ namespace BattleshipGame
             return "( " + shipPos.spX + ", " + shipPos.spY + " )";
         }
 
-        //used this for guessing postition
-        //calls ShotMiss/ShotHit to update
+        //use this for guessing position
+        //calls ShotMiss/ShotHit to update - 
         //the board with hit/miss, also updates sunk/dupe var 
         public bool ShootAtShip(int xcoord, int ycoord)
         {
@@ -116,7 +117,7 @@ namespace BattleshipGame
             Console.Write("---\n");
         }
 
-        //updates board if miss/dupe variable
+        //updates board in case of miss - checks for duplicate guesses
         private void ShotMiss(int shotx, int shoty)
         {
             if (gameBoard[shotx, shoty] == "*")
@@ -128,7 +129,7 @@ namespace BattleshipGame
             }
         }
 
-        //updates board if hit
+        //updates board in case of hit
         private void ShotHit(int shotx, int shoty)
         {
             gameBoard[shotx, shoty] = "X";
@@ -170,17 +171,20 @@ namespace BattleshipGame
                     Console.Write("\nGuess #{0} | Enter X Coordinate: ", guesses);
                     try
                     {
-                       guessX = Convert.ToInt32(Console.ReadLine());
-                       goodguess = true;
+                        guessX = Convert.ToInt32(Console.ReadLine());
+                        if (guessX < 0 || guessX > 9)
+                            throw new System.ArgumentOutOfRangeException();
+                        else
+                            goodguess = true;
                     }
                     catch//in case something other than an integer was entered
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\a\nInvalid Input\n");
+                        Console.Write("\a\nValid values are 0 through 9\n");
                         Console.ForegroundColor = ConsoleColor.Gray;
                         goodguess = false;
                     }
-                } while (!goodguess);
+                } while (!goodguess || guessX < 0 || guessX > 9);
 
                 do//get Y coordinate
                 {
@@ -188,16 +192,19 @@ namespace BattleshipGame
                     try
                     {
                         guessY = Convert.ToInt32(Console.ReadLine());
-                        goodguess = true;
+                        if (guessY < 0 || guessY > 9)
+                            throw new System.ArgumentOutOfRangeException();
+                        else
+                            goodguess = true;
                     }
                     catch//in case something other than an integer was entered
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\a\nInvalid Input\n");
+                        Console.Write("\a\nValid values are 0 through 9\n");
                         goodguess = false;
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
-                } while (!goodguess);
+                } while (!goodguess || guessY < 0 || guessY > 9);
 
                 shipSunk = myBS.ShootAtShip(guessX, guessY);
 
